@@ -9,7 +9,7 @@ function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:5000/api/users/register', { email, password });
+      await axios.post('http://localhost:5050/api/users/register', { email, password });
       alert('Registration successful! Awaiting admin approval.');
     } catch (err) {
       alert('Registration failed. Please try again.');

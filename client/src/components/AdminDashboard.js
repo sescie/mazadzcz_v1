@@ -5,13 +5,13 @@ function AdminDashboard() {
   const [pendingUsers, setPendingUsers] = useState([]);
 
   useEffect(() => {
-    axios.get('http://localhost:5000/api/admin/pending-users', {
+    axios.get('http://localhost:5050/api/admin/pending-users', {
       headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
     }).then(res => setPendingUsers(res.data));
   }, []);
 
   const approveUser = (userId) => {
-    axios.put(`http://localhost:5000/api/admin/approve-user/${userId}`, {}, {
+    axios.put(`http://localhost:5050/api/admin/approve-user/${userId}`, {}, {
       headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
     }).then(() => {
       setPendingUsers(pendingUsers.filter(user => user.id !== userId));

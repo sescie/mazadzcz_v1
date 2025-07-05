@@ -2,7 +2,7 @@ function Investments() {
     const [investments, setInvestments] = useState([]);
   
     useEffect(() => {
-      axios.get('http://localhost:5000/api/investments', {
+      axios.get('http://localhost:5050/api/investments', {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       }).then(res => setInvestments(res.data));
     }, []);

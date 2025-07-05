@@ -1,50 +1,92 @@
-// client/src/contexts/AuthContext.js
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useState, useEffect, useMemo, useCallback } from 'react';
 import { jwtDecode } from 'jwt-decode';
-import axios from 'axios';
 
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [auth, setAuth] = useState(() => {
+    const token = localStorage.getItem('token');
+    const rawUser = localStorage.getItem('user');
+    
+    let user = null;
+    if (rawUser && rawUser !== 'undefined') {
+      try {
+        user = JSON.parse(rawUser);
+      } catch (e) {
+        console.warn('Failed to parse user data:', e);
+        localStorage.removeItem('user');
+      }
+    }
 
-  // 💡 Jargon: Token Refresh Mechanism
-  useEffect(() => {
-    initializeAuth();
+    if (token) {
+      try {
+        const { exp } = jwtDecode(token);
+        if (Date.now() >= exp * 1000) {
+          localStorage.removeItem('token');
+          localStorage.removeItem('user');
+          return null;
+        }
+        return { token, user };
+      } catch (e) {
+        console.warn('Invalid token:', e);
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+      }
+    }
+    return null;
+  });
+
+  const [initializing, setInitializing] = useState(true);
+
+  const logout = useCallback(() => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    setAuth(null);
   }, []);
 
-  const initializeAuth = async () => {
-    const token = localStorage.getItem('token');
-    if (!token) return setLoading(false);
+  const contextValue = useMemo(() => ({
+    auth,
+    setAuth: (newAuth) => {
+      if (newAuth) {
+        localStorage.setItem('token', newAuth.token);
+        localStorage.setItem('user', JSON.stringify(newAuth.user));
+        setAuth(newAuth);
+      } else {
+        logout();
+      }
+    },
+    logout
+  }), [auth, logout]);
 
-    try {
-      const { data } = await axios.get('/api/auth/verify', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setUser(jwtDecode(token));
-    } catch (error) {
-      localStorage.removeItem('token');
-    }
-    setLoading(false);
-  };
+  useEffect(() => {
+    const verifyAuth = async () => {
+      if (auth?.token) {
+        try {
+          // Add token verification API call if needed
+        } catch (err) {
+          logout();
+        }
+      }
+      setInitializing(false);
+    };
+    verifyAuth();
+  }, [auth?.token, logout]);
 
-  const login = async (credentials) => {
-    const { data } = await axios.post('/api/auth/login', credentials);
-    localStorage.setItem('token', data.token);
-    setUser(jwtDecode(data.token)); 
-  };
-
-  const logout = () => {
-    localStorage.removeItem('token');
-    setUser(null);
-  };
+  if (initializing) {
+    return <div>Loading...</div>;
+  }
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout }}>
-      {!loading && children}
+    <AuthContext.Provider value={contextValue}>
+      {children}
     </AuthContext.Provider>
   );
 }
 
-export const useAuth = () => useContext(AuthContext);
+export function useAuth() {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within AuthProvider');
+  }
+  return context;
+}

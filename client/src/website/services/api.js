@@ -13,6 +13,7 @@ async function fetchInvestments() {
   return res.json();
 }
 
+
 export function getAllInvestments() {
   return fetchInvestments();
 }

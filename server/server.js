@@ -7,11 +7,6 @@ require('dotenv').config();
 app.use(cors());
 app.use(express.json());
 
-app.get('/', (req, res) => {
-  console.log('✅ Root route hit at:', new Date().toISOString());
-  res.send('Mazadzicz Backend is running! 🚀');
-});
-
 const usersRouter = require('./routes/users');
 app.use('/api/users', usersRouter);
 

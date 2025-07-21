@@ -281,7 +281,7 @@ export default function UserManagement() {
       width: 100,
       renderCell: (params) => (
         <Typography variant="caption" color="text.secondary" fontFamily="monospace">
-          {params.value?.slice(0, 8) || 'N/A'}
+          {params.value ? String(params.value).slice(0, 8) : 'N/A'}
         </Typography>
       )
     },

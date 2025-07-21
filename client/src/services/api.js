@@ -1,5 +1,8 @@
 import axios from 'axios';
-const API_BASE_URL = 'http://localhost:5050/api';
+const ENV_MODE = process.env.REACT_APP_ENV_MODE;
+const PROD_BASE_URL = process.env.REACT_APP_PROD_BASE_URL;
+const LOCAL_BASE_URL = process.env.REACT_APP_LOCAL_BASE_URL;
+const API_BASE_URL = ENV_MODE === 'production' ? PROD_BASE_URL : LOCAL_BASE_URL;
 
 export const API_URL = API_BASE_URL;
 

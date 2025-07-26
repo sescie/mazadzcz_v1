@@ -9,11 +9,11 @@ router.get('/pending-users', auth, isAdmin, async (req, res) => {
     const [users] = await db.query(
       `SELECT id, email, full_name, phone, created_at 
        FROM users 
-       WHERE role = 'pending'`
+       WHERE is_approved = 0`
     );
     res.json(users);
   } catch (err) {
-    console.error('Fetch pending users error:', err);
+    console.error('Fetch unappoved users error:', err);
     res.status(500).json({ error: 'Failed to fetch pending users' });
   }
 });
@@ -23,7 +23,7 @@ router.put('/approve-user/:id', auth, isAdmin, async (req, res) => {
   try {
     await db.query(
       `UPDATE users 
-       SET role = 'investor' 
+       SET is_approved = 1
        WHERE id = ?`,
       [req.params.id]
     );
@@ -38,7 +38,7 @@ router.put('/un-approve-user/:id', auth, isAdmin, async (req, res) => {
   try {
     await db.query(
       `UPDATE users 
-       SET role = 'pending' 
+       SETis_approved = 0
        WHERE id = ?`,
       [req.params.id]
     );
@@ -130,7 +130,26 @@ router.patch(
   }
 );
 
+router.post('/admin/users/:id/approve', async (req, res) => {
+  const { id } = req.params;
 
+  try {
+    const [result] = await db.query(
+      'UPDATE users SET is_approved = 1 WHERE id = ?',
+      [id]
+    );
+    db.release();
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    return res.json({ success: true, message: 'User approved' });
+  } catch (err) {
+    console.error('Approve user error:', err);
+    return res.status(500).json({ error: 'Internal server error' });
+  }
+});
 /**
  * PATCH /api/requests/:reqId/reject
  * Reject a pending investment request →

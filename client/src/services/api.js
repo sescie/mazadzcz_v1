@@ -429,6 +429,44 @@ export function rejectInvestmentRequest(reqId, token) {
 
 
 
+// profile
+export const fetchProfile = (token) =>
+  fetch(`${API_BASE_URL}/users/profile`, {
+    headers: { Authorization: `Bearer ${token}` }
+  }).then(handleResponse);
+
+export const updateEmail = (email, token) =>
+  fetch(`${API_BASE_URL}/users/profile/email`, {
+    method: 'PUT',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ email })
+  }).then(handleResponse);
+
+export const updatePassword = (currentPassword, newPassword, token) =>
+  fetch(`${API_BASE_URL}/users/profile/password`, {
+    method: 'PUT',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ currentPassword, newPassword })
+  }).then(handleResponse);
+
+export const updateBank = (bankDetails, token) =>
+  fetch(`${API_BASE_URL}/users/profile/bank`, {
+    method: 'PUT',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(bankDetails)
+  }).then(handleResponse);
+
+
+
 
 //Investment Request Endpoints
 

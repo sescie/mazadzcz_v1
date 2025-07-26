@@ -1,0 +1,231 @@
+/* navBar.css */
+
+/* --- Theme variables (you can override these in a :root selector) --- */
+header{
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+:root {
+  --primary:   #1a73e8;
+  --accent:    #ffab00;
+  --text:      #333;
+  --light:     #f9f9f9;
+  --lightGray: #e0e0e0;
+}
+
+/* --- Shortcuts Bar --- */
+.shortcuts-bar {
+  background-color: var(--primary);
+  padding: 10px 0;
+  position: sticky;
+  top: 0;
+  z-index: 1100;
+}
+
+.shortcuts-bar .container {
+  max-width: 1450px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.shortcuts-bar .logo a {
+  color: white;
+  font-size: 26px;
+  font-weight: 700;
+  text-decoration: none;
+  letter-spacing: 1px;
+  display: flex;
+  align-items: center;
+}
+
+.shortcuts-bar .logo .accent {
+  color: var(--accent);
+}
+
+.shortcuts-bar .top-links {
+  display: flex;
+  gap: 25px;
+  align-items: center;
+}
+
+.shortcuts-bar .top-links a,
+.shortcuts-bar .top-links button {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.85);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: color 0.2s ease;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.shortcuts-bar .top-links a:hover,
+.shortcuts-bar .top-links button:hover {
+  color: white;
+}
+
+/* --- Main Navigation --- */
+.main-nav {
+  background-color: white;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 46px;
+  z-index: 1000;
+  transition: all 0.3s ease;
+  height: 70px;
+}
+
+.main-nav.scrolled {
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+}
+
+.main-nav .container {
+  max-width: 1450px;
+  margin: 0 auto;
+  padding: 0 0px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 100%;
+}
+
+/* --- Mobile Toggle --- */
+.mobile-toggle {
+  display: none;
+}
+@media (max-width: 768px) {
+  .mobile-toggle {
+    display: flex;
+    align-items: center;
+  }
+}
+
+/* --- Flat Menu --- */
+.flat-menu {
+  display: flex;
+  height: 100%;
+}
+@media (max-width: 768px) {
+  .flat-menu.collapsed {
+    display: none;
+  }
+  .flat-menu.expanded {
+    display: flex;
+    position: fixed;
+    top: 116px;
+    left: 0;
+    width: 100%;
+    height: calc(100vh - 116px);
+    background-color: white;
+    padding: 20px 0;
+    transition: all 0.4s ease;
+    overflow-y: auto;
+    z-index: 1000;
+    flex-direction: column;
+  }
+}
+
+.level0 {
+  list-style: none;
+  display: flex;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+@media (max-width: 768px) {
+  .level0 {
+    flex-direction: column;
+    width: 100%;
+  }
+}
+
+.level0 > li {
+  position: relative;
+  height: 100%;
+}
+@media (max-width: 768px) {
+  .level0 > li {
+    width: 100%;
+    height: auto;
+    border-bottom: 1px solid var(--lightGray);
+  }
+}
+
+.level0 > li > a,
+.level0 > li > button {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  padding: 0 22px;
+  text-decoration: none;
+  color: var(--primary);
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: 0.3px;
+  transition: color 0.2s ease;
+  background: none;
+  border: none;
+  width: 100%;
+  text-align: left;
+}
+@media (max-width: 768px) {
+  .level0 > li > a,
+  .level0 > li > button {
+    padding: 18px 25px;
+    height: auto;
+    justify-content: space-between;
+  }
+}
+
+.dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  min-width: 240px;
+  background-color: white;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  border-top: 3px solid var(--accent);
+  border-radius: 0 0 6px 6px;
+  overflow: hidden;
+  z-index: 100;
+  display: none;
+}
+.dropdown.open {
+  display: block;
+}
+
+.dropdown a {
+  display: block;
+  padding: 14px 22px;
+  text-decoration: none;
+  color: var(--text);
+  font-weight: 500;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+  transition: all 0.3s ease;
+}
+.dropdown a:last-child {
+  border-bottom: none;
+}
+.dropdown a:hover {
+  background-color: var(--light);
+  color: var(--accent);
+  padding-left: 28px;
+}
+@media (max-width: 768px) {
+  .dropdown {
+    position: static;
+    box-shadow: none;
+    border-top: none;
+    width: 100%;
+  }
+  .dropdown a {
+    padding: 12px 25px 12px 35px;
+  }
+}

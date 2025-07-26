@@ -15,14 +15,11 @@ import Login from './components/Auth/Login';
 import Register from './components/Auth/Register';
 
 import AdminDashboard from './components/Admin/AdminDashboard';
-import InvestorDashboard from './components/Investor/InvestorDashboard';
-import InvestorDashboardContent from './components/Investor/InvestorDashboardContent';
 import UserManagement from './components/Admin/UserManagement';
 import UserDetailPage from './components/Admin/UserDetailPage';
 import InvestmentManagement from './components/Investor/InvestmentManagement';
 import InvestmentDetail from './components/Investments/InvestmentDetail';
 import AssignmentManagement from './components/Investments/AssignmentManagement';
-import InvestmentRequest from './components/Investor/InvestmentRequest';
 import AdminRequestsPage from './components/Admin/AdminRequestsPage';
 
 import WebsiteRoutes from './website/routes/WebsiteRoutes';
@@ -39,16 +36,13 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
+  // Optional: check allowed roles if you want role-based guarding here
   if (allowedRoles && !allowedRoles.includes(auth.user.role)) {
+    // Unauthorized access redirect or message
     return <Navigate to="/" replace />;
   }
 
   return children;
-};
-
-const AuthRoute = ({ children }) => {
-  const { auth } = useAuth();
-  return auth ? <Navigate to="/" replace /> : children;
 };
 
 const AppContent = () => {
@@ -58,16 +52,15 @@ const AppContent = () => {
     <AppErrorBoundary>
       <CssBaseline />
       <Routes>
-        {/* Public Auth Routes */}
-        <Route path="/login" element={<AuthRoute><Login /></AuthRoute>} />
-        <Route path="/register" element={<AuthRoute><Register /></AuthRoute>} />
-
         {/* Admin Routes */}
-        <Route path="/admin" element={
-          <ProtectedRoute allowedRoles={['admin']}>
-            <AdminDashboard />
-          </ProtectedRoute>
-        }>
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute allowedRoles={['admin']}>
+              <AdminDashboard />
+            </ProtectedRoute>
+          }
+        >
           <Route index element={<Navigate to="dashboard" replace />} />
           <Route path="dashboard" element={<AdminDashboard />} />
           <Route path="users">
@@ -82,28 +75,18 @@ const AppContent = () => {
           <Route path="requests" element={<AdminRequestsPage />} />
         </Route>
 
-        {/* Investor Routes */}
-        <Route path="/investor" element={
-          <ProtectedRoute allowedRoles={['investor']}>
-            <InvestorDashboard />
-          </ProtectedRoute>
-        }>
-          <Route index element={<Navigate to="dashboard" replace />} />
-          <Route path="dashboard" element={<InvestorDashboardContent />} />
-          <Route path="portfolio" element={<InvestmentManagement />} />
-          <Route path="request" element={<InvestmentRequest />} />
-        </Route>
-
-        {/* Website Routes (default/fallback) */}
-        <Route path="/" element={
-          auth?.user?.role === 'admin'
-            ? <Navigate to="/admin/dashboard" replace />
-            : auth?.user?.role === 'investor'
-              ? <Navigate to="/investor/dashboard" replace />
-              : <WebsiteRoutes />
-        } />
-
-        {/* Everything else falls back to the website */}
+        {/* Website Routes */}
+        <Route
+          path="/"
+          element={
+            auth?.user?.role === 'admin' ? (
+              <Navigate to="/admin/dashboard" replace />
+            ) : (
+              <WebsiteRoutes />
+            )
+          }
+        />
+        {/* Catch-all fallback */}
         <Route path="*" element={<WebsiteRoutes />} />
       </Routes>
     </AppErrorBoundary>

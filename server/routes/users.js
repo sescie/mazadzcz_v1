@@ -30,14 +30,14 @@ router.post(
   async (req, res) => {
     // 2.1) Pull out all the fields we want
     const {
-      email, password, full_name, phone,
+      email, password, full_name, phone, role= 'investor',
       date_of_birth, nationality, residential_address,
       city, state, postal_code, country,
       id_number, source_of_funds, terms_accepted,
       bank_name, bank_account_name, bank_account_number,
       bank_branch, swift_bic, preferred_payout_method
     } = req.body;
-
+    console.log('Registration request body:', req.body);
     console.log(terms_accepted);
 
     // 2.2) Basic “required” validations
@@ -60,11 +60,11 @@ router.post(
         error: 'Password must be at least 8 characters long'
       });
     }
-    if (terms_accepted !== true) {
-      return res.status(400).json({
-        error: 'You must accept the terms and conditions'
-      });
-    }
+    // if (terms_accepted !== true) {
+    //   return res.status(400).json({
+    //     error: 'You must accept the terms and conditions'
+    //   });
+    // }
 
     // 2.4) File upload paths (multer populates req.files)
     const idDocPath  = req.files?.id_document?.[0]?.path       || null;
@@ -94,17 +94,17 @@ router.post(
       // 2.8) Insert into users (role & kyc_status default to 'pending')
       const insertSql = `
         INSERT INTO users (
-          email, password_hash, full_name, phone,
+          email, password_hash, full_name,phone,role,
           date_of_birth, nationality, residential_address,
           city, state, postal_code, country,
           id_number, id_document_path, proof_of_address_path,
           source_of_funds, terms_accepted,
           bank_name, bank_account_name, bank_account_number,
           bank_branch, swift_bic, preferred_payout_method
-        ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+        ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
       `;
       const params = [
-        email, passwordHash, full_name, phone,
+        email, passwordHash, full_name, phone,role,
         date_of_birth || null, nationality || null, residential_address || null,
         city || null, state || null, postal_code || null, country || null,
         id_number || null, idDocPath,   proofPath,
@@ -117,6 +117,10 @@ router.post(
         preferred_payout_method || null
       ];
       const [result] = await conn.query(insertSql, params);
+      await conn.query(
+        'INSERT INTO approval_requests (user_id) VALUES (?)',
+        [result.insertId]
+      );
 
       // 2.9) Commit & release
       await conn.commit();
@@ -172,7 +176,8 @@ router.post('/login', async (req, res) => {
         email: user.email,
         full_name: user.full_name,
         phone: user.phone,
-        role: user.role
+        role: user.role,
+        is_approved: user.is_approved || false // Ensure is_approved is included
       }
     });
   } catch (err) {
@@ -400,5 +405,49 @@ router.get(
     }
   }
 );
+router.get('/profile', auth, async (req, res) => {
+  const userId = req.user.id;
+  const [rows] = await pool.query(
+    `SELECT email, full_name, phone, 
+            banking_name, banking_account_name, banking_account_number 
+     FROM users WHERE id = ?`, 
+    [userId]
+  );
+  res.json(rows[0]);
+});
+
+// PUT email
+router.put('/profile/email', auth, async (req, res) => {
+  const userId = req.user.id;
+  const { email } = req.body;
+  // add format & uniqueness checks here...
+  await pool.query(`UPDATE users SET email = ? WHERE id = ?`, [email, userId]);
+  res.json({ success: true, email });
+});
+
+// PUT password
+router.put('/profile/password', auth, async (req, res) => {
+  const userId = req.user.id;
+  const { currentPassword, newPassword } = req.body;
+  const [[user]] = await pool.query(`SELECT password_hash FROM users WHERE id = ?`, [userId]);
+  const match = await bcrypt.compare(currentPassword, user.password_hash);
+  if (!match) return res.status(400).json({ error: 'Current password incorrect' });
+  const hash = await bcrypt.hash(newPassword, 10);
+  await pool.query(`UPDATE users SET password_hash = ? WHERE id = ?`, [hash, userId]);
+  res.json({ success: true });
+});
+
+// PUT banking details
+router.put('/profile/bank', auth, async (req, res) => {
+  const userId = req.user.id;
+  const { banking_name, banking_account_name, banking_account_number } = req.body;
+  await pool.query(
+    `UPDATE users 
+     SET banking_name = ?, banking_account_name = ?, banking_account_number = ? 
+     WHERE id = ?`,
+    [banking_name, banking_account_name, banking_account_number, userId]
+  );
+  res.json({ success: true });
+});
 
 module.exports = router;

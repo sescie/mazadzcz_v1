@@ -31,6 +31,9 @@ app.use('/api/admin', adminRoutes);
 const PORT = process.env.SERVER_PORT || 5000;
 const path = require('path');
 
+app.use('/api/profile', require('./routes/user_profile'));
+
+
 // Serve React static files in production
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, '../client/build')));

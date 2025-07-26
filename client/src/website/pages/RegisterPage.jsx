@@ -143,7 +143,7 @@ export default function RegisterPage() {
   return (
     <div className="wrapper">
       <Navbar />
-      <main className="container">
+      <main className="register-container">
         <div className="card">
           <h2>Create Account</h2>
 
@@ -161,7 +161,7 @@ export default function RegisterPage() {
             {/* Step 1 */}
             <div className={`step-panel ${step===0?'show':''}`}>
               <div className="field">
-                <label>Full Name</label>
+                <div>Full Name</div>
                 <input
                   name="full_name" type="text"
                   value={data.full_name}
@@ -170,7 +170,7 @@ export default function RegisterPage() {
                 {errors.full_name && <p className="error">{errors.full_name}</p>}
               </div>
               <div className="field">
-                <label>Date of Birth</label>
+                <div>Date of Birth</div>
                 <input
                   name="dob" type="date"
                   value={data.dob}
@@ -180,14 +180,16 @@ export default function RegisterPage() {
               </div>
               <div className="field radio-group">
                 {['male','female','other'].map(g => (
-                  <label key={g}>
+                  <div className='flex-radio' key={g}>
                     <input
                       type="radio" name="gender" value={g}
                       checked={data.gender===g}
                       onChange={handleChange}
                     />
-                    {g.charAt(0).toUpperCase()+g.slice(1)}
-                  </label>
+                    <div className="radio-label">
+                      {g.charAt(0).toUpperCase()+g.slice(1)}
+                    </div>
+                  </div>
                 ))}
                 {errors.gender && <p className="error">{errors.gender}</p>}
               </div>
@@ -196,7 +198,7 @@ export default function RegisterPage() {
             {/* Step 2 */}
             <div className={`step-panel ${step===1?'show':''}`}>
               <div className="field">
-                <label>Email</label>
+                <div>Email</div>
                 <input
                   name="email" type="email"
                   value={data.email}
@@ -205,7 +207,7 @@ export default function RegisterPage() {
                 {errors.email && <p className="error">{errors.email}</p>}
               </div>
               <div className="field">
-                <label>Phone</label>
+                <div>Phone</div>
                 <input
                   name="phone" type="text"
                   value={data.phone}
@@ -219,7 +221,7 @@ export default function RegisterPage() {
             {/* Step 3 */}
             <div className={`step-panel ${step===2?'show':''}`}>
               <div className="field">
-                <label>Street Address</label>
+                <div>Street Address</div>
                 <input
                   name="address" type="text"
                   value={data.address}
@@ -229,7 +231,7 @@ export default function RegisterPage() {
               </div>
               <div className="grid-2">
                 <div className="field">
-                  <label>City</label>
+                  <div>City</div>
                   <input
                     name="city" type="text"
                     value={data.city}
@@ -238,7 +240,7 @@ export default function RegisterPage() {
                   {errors.city && <p className="error">{errors.city}</p>}
                 </div>
                 <div className="field">
-                  <label>State/Province</label>
+                  <div>State/Province</div>
                   <input
                     name="state" type="text"
                     value={data.state}
@@ -249,7 +251,7 @@ export default function RegisterPage() {
               </div>
               <div className="grid-2">
                 <div className="field">
-                  <label>Zip Code</label>
+                  <div>Zip Code</div>
                   <input
                     name="zip" type="text"
                     value={data.zip}
@@ -258,7 +260,7 @@ export default function RegisterPage() {
                   {errors.zip && <p className="error">{errors.zip}</p>}
                 </div>
                 <div className="field">
-                  <label>Country</label>
+                  <div>Country</div>
                   <input
                     name="country" type="text"
                     value={data.country}
@@ -272,7 +274,7 @@ export default function RegisterPage() {
             {/* Step 4 */}
             <div className={`step-panel ${step===3?'show':''}`}>
               <div className="field">
-                <label>Password</label>
+                <div>Password</div>
                 <div className="pass-wrapper">
                   <input
                     name="password"
@@ -293,7 +295,7 @@ export default function RegisterPage() {
                 {errors.password && <p className="error">{errors.password}</p>}
               </div>
               <div className="field">
-                <label>Confirm Password</label>
+                <div>Confirm Password</div>
                 <input
                   name="confirmPassword" type="password"
                   value={data.confirmPassword}
@@ -302,13 +304,13 @@ export default function RegisterPage() {
                 {errors.confirmPassword && <p className="error">{errors.confirmPassword}</p>}
               </div>
               <div className="field checkbox">
-                <label>
+                <div>
                   <input
                     name="terms" type="checkbox"
                     checked={data.terms}
                     onChange={handleChange}
                   /> I agree to Terms &amp; Conditions
-                </label>
+                </div>
                 {errors.terms && <p className="error">{errors.terms}</p>}
               </div>
             </div>

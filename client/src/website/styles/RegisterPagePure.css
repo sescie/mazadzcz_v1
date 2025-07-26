@@ -269,3 +269,20 @@ body, .wrapper {
   background: #e6f9e6;
   color: #2a7f2a;
 }
+.register-container {
+  width: 40%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 60vh;
+}
+.field .radio-group{
+  display: flex;
+  gap: 1.5rem;
+}
+.flex-radio{
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}

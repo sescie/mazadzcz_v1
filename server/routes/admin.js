@@ -101,7 +101,7 @@ router.patch(
     await db.query(
       `INSERT INTO user_investments
          (user_id, investment_id, units, purchase_price,
-          current_value, return_rate, asset_type, source)
+          current_value, return_rate, asset_class, source)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         reqRow.user_id,

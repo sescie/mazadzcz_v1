@@ -190,7 +190,7 @@ export default function UserManagement() {
         full_name: user.full_name || 'Unknown User',
         email: user.email || '',
         role: user.role || 'user',
-        is_active: user.is_active !== undefined ? user.is_active : true,
+        is_active: user.is_active !== undefined ? user.is_active : false,
         last_login: user.last_login || null,
         unread_notifications: user.unread_notifications || 0,
         rating: Math.random() * 2 + 3.5,

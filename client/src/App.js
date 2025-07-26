@@ -21,6 +21,7 @@ import InvestmentManagement from './components/Investor/InvestmentManagement';
 import InvestmentDetail from './components/Investments/InvestmentDetail';
 import AssignmentManagement from './components/Investments/AssignmentManagement';
 import AdminRequestsPage from './components/Admin/AdminRequestsPage';
+import AdminUserApprovalsPage from './components/Admin/AdminUserApprovalsPage';
 
 import WebsiteRoutes from './website/routes/WebsiteRoutes';
 
@@ -73,6 +74,8 @@ const AppContent = () => {
           </Route>
           <Route path="assignments" element={<AssignmentManagement />} />
           <Route path="requests" element={<AdminRequestsPage />} />
+          <Route path="user-approvals" element={<AdminUserApprovalsPage />} />
+
         </Route>
 
         {/* Website Routes */}

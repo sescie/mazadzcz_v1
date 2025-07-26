@@ -16,7 +16,8 @@ import {
   Settings,
   BarChart,
   Link as LinkIcon,
-  ReceiptLong as RequestsIcon
+  ReceiptLong as RequestsIcon,
+  PersonAddAlt as UserRequestIcon,
 } from '@mui/icons-material';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 
@@ -111,6 +112,19 @@ export default function AdminSidebar() {
         >
           <ListItemIcon sx={{ minWidth: 40 }}><RequestsIcon /></ListItemIcon>
           <ListItemText primary="Manage Requests" />
+        </ListItem>
+        <ListItem
+          button
+          component={RouterLink}
+          to="/admin/user-approvals"
+          sx={ isActive('/admin/user-approvals') && {
+              backgroundColor: theme.palette.action.selected,
+              borderLeft: `4px solid ${theme.palette.primary.main}`
+            }
+          }
+        >
+          <ListItemIcon sx={{ minWidth: 40 }}><UserRequestIcon /></ListItemIcon>
+          <ListItemText primary="UnApproved Users" />
         </ListItem>
         <ListItem 
           button 

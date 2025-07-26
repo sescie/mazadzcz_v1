@@ -106,6 +106,15 @@ export const deleteUser = (userId, token) =>
     headers: { Authorization: `Bearer ${token}` }
   }).then(handleResponse);
 
+export const getPendingUsers = (token) =>
+fetch(`${API_BASE_URL}/admin/pending-users`, {
+  method: 'GET',
+  headers: {
+    Authorization: `Bearer ${token}`,
+    'Content-Type': 'application/json'
+  }
+}).then(handleResponse);
+
 export const activateUser = (userId, token) =>
   fetch(`${API_BASE_URL}/users/admin/users/${userId}/activate`, {
     method: 'PATCH',
